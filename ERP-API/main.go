@@ -1,40 +1,61 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
-
-	_ "github.com/lib/pq"
+	"ERP-API/database"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
-func main() {
-	connStr := "dbname=ERP-db user=postgres password=??? sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	defer db.Close()
+type Subscription struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func getSubscriptions(c *gin.Context) {
+
+	rows, err := database.Connect().Query("SELECT id, name FROM \"Subscriptions\"")
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
-	rows, z := db.Query("SELECT name FROM \"Enterprises\" WHERE subscription_id = (SELECT id FROM \"Subscriptions\" WHERE name = 'standard')")
-	if z != nil {
-		log.Fatal(err)
-	}
 	defer rows.Close()
 
+	var subscriptions []Subscription
 	for rows.Next() {
-		var (
-			name string
-		)
-		err := rows.Scan(&name)
-		if err != nil {
-			log.Fatal(err)
+		var s Subscription
+		if err := rows.Scan(&s.Id, &s.Name); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
-		fmt.Printf("name: %s\n", name)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
+		subscriptions = append(subscriptions, s)
 	}
 
+	if err = rows.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, subscriptions)
+}
+
+func getSubscriptionById(c *gin.Context) {
+
+}
+
+func getContracts(c *gin.Context) {
+
+}
+
+func getContractById(c *gin.Context) {
+
+}
+
+func main() {
+	router := gin.Default()
+	router.GET("/Subscriptions", getSubscriptions)
+	router.GET("/Subscriptions/:id", getSubscriptionById)
+	router.GET("/Contracts", getContracts)
+	router.GET("/Contracts/:id", getContractById)
+	router.Run("localhost:8080")
 }
