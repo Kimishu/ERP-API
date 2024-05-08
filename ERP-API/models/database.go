@@ -1,9 +1,9 @@
-package database
+package models
 
 import (
 	"database/sql"
 	"fmt"
-	_ "gorm.io/gorm"
+	_ "github.com/lib/pq"
 	"log"
 )
 
@@ -15,23 +15,27 @@ const (
 	dbname   = "ERP-db"
 )
 
-func Connect() *sql.DB {
+type Database struct {
+	Conn *sql.DB
+}
+
+func (d *Database) Connect() {
 	connectionInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", connectionInfo)
+	var err error
+	d.Conn, err = sql.Open("postgres", connectionInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.Ping()
+	err = d.Conn.Ping()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Successfully connected to database!")
-	return db
 }
 
-func CloseConnection(db *sql.DB) {
-	defer db.Close()
+func (d *Database) CloseConnection() {
+	defer d.Conn.Close()
 }
