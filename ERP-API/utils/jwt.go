@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"errors"
+	"ERP-API/models"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
 
 var secretKey = []byte("somethingstrangehappens")
@@ -14,34 +14,29 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(enterpriseId uint) (string, error) {
+func GenerateToken(enterprise models.Enterprise) (string, error) {
 	claims := jwt.MapClaims{}
-	claims["enterprise_id"] = enterpriseId
-	claims["expiration_period"] = time.Now().Add(time.Hour).Unix()
+	claims["enterprise_id"] = enterprise.ID
+	claims["enterprise_name"] = enterprise.Name
+	claims["enterprise_email"] = enterprise.Email
+	claims["enterprise_subscription_name"] = enterprise.Sub
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secretKey)
 }
 
-func VerifyToken(tokenString string) error {
-	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+func VerifyToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
 	})
 
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	claims, ok := token.Claims.(*JWTClaims)
-	if !ok {
-		err = errors.New("Couldn't parse claims")
-		return err
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
 	}
 
-	if claims.ExpiresAt < time.Now().Local().Unix() {
-		err = errors.New("token expired")
-		return err
-	}
-
-	return nil
+	return nil, fmt.Errorf("invalid token")
 }

@@ -9,8 +9,3 @@ type ProductionOrder struct {
 	DateEnd   time.Time             `json:"date_end"`
 	Prod      Product               `json:"product"`
 }
-
-type ProductionOrderStatus struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}

@@ -5,42 +5,32 @@ type Subscription struct {
 	Name string `json:"name"`
 }
 
-func (s *Subscription) ReadAll() []Subscription {
-	db := Database{}
-	db.Connect()
-	defer db.CloseConnection()
-
-	rows, err := db.Conn.Query("SELECT id, name FROM \"Subscriptions\"")
+func (s *Subscription) ReadAll() []*Subscription {
+	rows, err := Database.Query("SELECT id, name FROM \"Subscriptions\"")
 	if err != nil {
-		return []Subscription{}
+		return []*Subscription{}
 	}
-
 	defer rows.Close()
 
-	var subscriptions []Subscription
+	var subscriptions []*Subscription
 	for rows.Next() {
 		var s Subscription
 		if err := rows.Scan(&s.ID, &s.Name); err != nil {
-			return []Subscription{}
+			return []*Subscription{}
 		}
-		subscriptions = append(subscriptions, s)
+		subscriptions = append(subscriptions, &s)
 	}
 
 	return subscriptions
 }
 
-func (s *Subscription) Read(id int) Subscription {
-	db := Database{}
-	db.Connect()
-	defer db.CloseConnection()
-
+func (s *Subscription) Read(id int) *Subscription {
 	var subscription Subscription
 
-	err := db.Conn.QueryRow("SELECT id, name FROM \"Subscriptions\" WHERE id=$1", id).Scan(&subscription.ID, &subscription.Name)
-
+	err := Database.QueryRow("SELECT id, name FROM \"Subscriptions\" WHERE id=$1", id).Scan(&subscription.ID, &subscription.Name)
 	if err != nil {
-		return Subscription{}
+		return &Subscription{}
 	}
 
-	return subscription
+	return &subscription
 }

@@ -2,10 +2,14 @@ package main
 
 import (
 	"ERP-API/handlers"
+	"ERP-API/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	models.ConnectDB()
+	defer models.Database.Close()
+
 	router := gin.Default()
 	//Subscriptions
 	router.GET("/Subscriptions", handlers.GetSubscriptions)

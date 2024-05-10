@@ -15,27 +15,21 @@ const (
 	dbname   = "ERP-db"
 )
 
-type Database struct {
-	Conn *sql.DB
-}
+var Database *sql.DB
 
-func (d *Database) Connect() {
+func ConnectDB() {
 	connectionInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 	var err error
-	d.Conn, err = sql.Open("postgres", connectionInfo)
+	Database, err = sql.Open("postgres", connectionInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = d.Conn.Ping()
+	err = Database.Ping()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Successfully connected to database!")
-}
-
-func (d *Database) CloseConnection() {
-	defer d.Conn.Close()
 }
