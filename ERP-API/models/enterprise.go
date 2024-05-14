@@ -18,6 +18,6 @@ func (e *Enterprise) Read(id int) *Enterprise {
 		return &enterprise
 	}
 	var subscription Subscription
-	enterprise.Sub = subscription.Read(subscriptionId)
+	enterprise.Sub = subscription.ReadById(subscriptionId)
 	return &enterprise
 }

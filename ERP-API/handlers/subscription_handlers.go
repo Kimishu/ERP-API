@@ -4,7 +4,6 @@ import (
 	"ERP-API/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func GetSubscriptions(c *gin.Context) {
@@ -13,13 +12,9 @@ func GetSubscriptions(c *gin.Context) {
 	c.JSON(http.StatusOK, subscriptions)
 }
 
-func GetSubscriptionById(c *gin.Context) {
+func GetSubscriptionByName(c *gin.Context) {
 	subRepo := &models.Subscription{}
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	subscription := subRepo.Read(id)
+	name := c.Param("name")
+	subscription := subRepo.ReadByName(name)
 	c.JSON(http.StatusOK, subscription)
 }

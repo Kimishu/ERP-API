@@ -24,7 +24,18 @@ func (s *Subscription) ReadAll() []*Subscription {
 	return subscriptions
 }
 
-func (s *Subscription) Read(id int) *Subscription {
+func (s *Subscription) ReadByName(name string) *Subscription {
+	var subscription Subscription
+
+	err := Database.QueryRow("SELECT id, name FROM \"Subscriptions\" WHERE name=$1", name).Scan(&subscription.ID, &subscription.Name)
+	if err != nil {
+		return &Subscription{}
+	}
+
+	return &subscription
+}
+
+func (s *Subscription) ReadById(id int) *Subscription {
 	var subscription Subscription
 
 	err := Database.QueryRow("SELECT id, name FROM \"Subscriptions\" WHERE id=$1", id).Scan(&subscription.ID, &subscription.Name)

@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"ERP-API/models"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 var secretKey = []byte("somethingstrangehappens")
@@ -14,12 +14,10 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(enterprise models.Enterprise) (string, error) {
+func GenerateToken(enterpriseId string) (string, error) {
 	claims := jwt.MapClaims{}
-	claims["enterprise_id"] = enterprise.ID
-	claims["enterprise_name"] = enterprise.Name
-	claims["enterprise_email"] = enterprise.Email
-	claims["enterprise_subscription_name"] = enterprise.Sub
+	claims["enterprise_id"] = enterpriseId
+	claims["exp"] = time.Now().Add(time.Second * 1).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secretKey)
