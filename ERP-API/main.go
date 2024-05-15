@@ -14,34 +14,43 @@ func main() {
 	router := gin.Default()
 
 	//Enterprises (public)
-	router.POST("/Login", handlers.Login)
-	router.POST("/Register", handlers.Register)
+	router.POST("/login", handlers.Login)
+	router.POST("/register", handlers.Register)
+	//Subscriptions
+	router.GET("/subscriptions", handlers.GetSubscriptions)
+	router.GET("/subscriptions/:id", handlers.GetSubscriptionByName)
 
 	protectedRoutes := router.Group("/")
 	protectedRoutes.Use(middleware.AuthenticationMiddleware())
 	{
-		//Subscriptions
-		protectedRoutes.GET("/Subscriptions", handlers.GetSubscriptions)
-		protectedRoutes.GET("/Subscriptions/:id", handlers.GetSubscriptionByName)
+		//Enterprises
+		protectedRoutes.GET("/profile", handlers.Profile)
 		//Contracts
-		protectedRoutes.GET("/Contracts", handlers.GetContracts)
-		protectedRoutes.GET("/Contracts/:id", handlers.GetContractById)
-		protectedRoutes.POST("/Contracts", handlers.PostContract)
+		protectedRoutes.GET("/contracts", handlers.GetContracts)
+		protectedRoutes.GET("/contracts/import", handlers.GetImportContracts)
+		protectedRoutes.GET("/contracts/export", handlers.GetExportContracts)
+		//requests?
+		//...
+		protectedRoutes.GET("/contracts/:id", handlers.GetContractById)
+		protectedRoutes.POST("/contracts", handlers.PostContract)
+		//...
 		//Products
-		protectedRoutes.GET("/Products", handlers.GetProducts)
-		protectedRoutes.GET("/Products/:id", handlers.GetProductByID)
-		protectedRoutes.POST("/Products", handlers.PostProduct)
+		protectedRoutes.GET("/products", handlers.GetProducts)
+		protectedRoutes.GET("/products/:id", handlers.GetProductByID)
+		protectedRoutes.POST("/products", handlers.PostProduct)
 		//ProductionOrders
-		protectedRoutes.GET("/ProductionOrders", handlers.GetProductionOrders)
-		protectedRoutes.GET("/ProductionOrders/:id", handlers.GetProductionOrderByID)
-		protectedRoutes.POST("/ProductionOrders", handlers.PostProductionOrder)
+		protectedRoutes.GET("/productionOrders", handlers.GetProductionOrders)
+		protectedRoutes.GET("/productionOrders/:id", handlers.GetProductionOrderByID)
+		protectedRoutes.POST("/productionOrders", handlers.PostProductionOrder)
 		//Deliveries
-		protectedRoutes.GET("/Deliveries", handlers.GetDeliveries)
-		protectedRoutes.GET("/Deliveries/:id", handlers.GetDeliveryByID)
+		protectedRoutes.GET("/deliveries", handlers.GetDeliveries)
+		protectedRoutes.GET("/deliveries/:id", handlers.GetDeliveryByID)
 		//Debtors
-		protectedRoutes.GET("/Debtors", handlers.GetDebtors)
-		protectedRoutes.GET("/Debtors/:id", handlers.GetDebtorByID)
-		protectedRoutes.POST("/Debtors", handlers.PostDebtor)
+		protectedRoutes.GET("/debtors", handlers.GetDebtors)
+		protectedRoutes.GET("/debtors/:id", handlers.GetDebtorByID)
+		protectedRoutes.POST("/debtors", handlers.PostDebtor)
+		//Partners
+		//protectedRoutes.GET("/partners", handlers.)
 	}
 
 	router.Run("localhost:8080")

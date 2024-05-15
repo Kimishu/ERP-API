@@ -17,7 +17,7 @@ type JWTClaims struct {
 func GenerateToken(enterpriseId string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["enterprise_id"] = enterpriseId
-	claims["exp"] = time.Now().Add(time.Second * 1).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 100).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secretKey)

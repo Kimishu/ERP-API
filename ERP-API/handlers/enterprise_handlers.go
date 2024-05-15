@@ -89,5 +89,13 @@ func Register(c *gin.Context) {
 
 	token, _ := utils.GenerateToken(userId)
 
-	c.JSON(http.StatusOK, token)
+	c.JSON(http.StatusCreated, token)
+}
+
+func Profile(c *gin.Context) {
+	subRepo := &models.Enterprise{}
+	enterpriseId := c.GetString("enterprise_id")
+	enterprise := subRepo.Read(enterpriseId)
+
+	c.JSON(http.StatusOK, enterprise)
 }
