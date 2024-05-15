@@ -3,27 +3,24 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 )
 
 type Product struct {
-	ID          string     `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Price       float64    `json:"price"`
-	E           Enterprise `json:"enterprise"`
+	Id           uuid.UUID `json:"id"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	Price        float64   `json:"price"`
+	EnterpriseId uuid.UUID `json:"enterprise"`
 }
 
 func (p *Product) Read(id string) Product {
 	var product Product
-	var enterpriseId string
-	err := Database.QueryRow("SELECT name, description, price, enterprise_id FROM \"Products\" WHERE id=$1", id).Scan(&product.ID, &product.Name, &product.Description, &product.Price, &enterpriseId)
+	err := Database.QueryRow("SELECT name, description, price, enterprise_id FROM \"Products\" WHERE id=$1", id).Scan(&product.Id, &product.Name, &product.Description, &product.Price, &product.EnterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return product
 	}
-
-	var enterprise Enterprise
-	product.E = enterprise.Read(enterpriseId)
 	return product
 }
 
@@ -48,7 +45,7 @@ func (p *Product) ReadByEnterprise(enterpriseId string) []Product {
 }
 
 func (p *Product) Write() error {
-	_, err := Database.Exec("INSERT INTO \"Products\" (name, description, price, enterprise_id) VALUES ($1, $2, $3, $4)", &p.Name, &p.Description, &p.Price, &p.E.ID)
+	_, err := Database.Exec("INSERT INTO \"Products\" (name, description, price, enterprise_id) VALUES ($1, $2, $3, $4)", &p.Name, &p.Description, &p.Price, &p.EnterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("Failed to create a new product")

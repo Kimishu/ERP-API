@@ -39,5 +39,5 @@ func GetContractById(c *gin.Context) {
 
 // Необходимо добавить обработку нахождения предприятия, с которым заключается контракт
 func PostContract(c *gin.Context) {
-	var contract = models.Contract{}
+	//	var contract = models.Contract{}
 }

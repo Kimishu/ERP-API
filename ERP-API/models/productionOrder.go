@@ -1,11 +1,14 @@
 package models
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type ProductionOrder struct {
-	ID        int                   `json:"id"`
-	Status    ProductionOrderStatus `json:"status"`
-	DateStart time.Time             `json:"date_start"`
-	DateEnd   time.Time             `json:"date_end"`
-	Prod      Product               `json:"product"`
+	Id        uuid.UUID `json:"id"`
+	StatusId  uuid.UUID `json:"status"`
+	DateStart time.Time `json:"date_start"`
+	DateEnd   time.Time `json:"date_end"`
+	ProductId uuid.UUID `json:"product"`
 }

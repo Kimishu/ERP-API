@@ -1,23 +1,23 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/google/uuid"
+)
 
 type Enterprise struct {
-	ID    string       `json:"id"`
-	Name  string       `json:"name"`
-	Email string       `json:"email"`
-	Sub   Subscription `json:"subscription"`
+	Id             string    `json:"id"`
+	Name           string    `json:"name"`
+	Email          string    `json:"email"`
+	SubscriptionId uuid.UUID `json:"subscription_id"`
 }
 
 func (e *Enterprise) Read(id string) Enterprise {
 	var enterprise Enterprise
-	var subscriptionId string
-	err := Database.QueryRow("SELECT id, name, email, subscription_id FROM \"Enterprises\" WHERE id = $1", id).Scan(&enterprise.ID, &enterprise.Name, &enterprise.Email, &subscriptionId)
+	err := Database.QueryRow("SELECT id, name, email, subscription_id FROM \"Enterprises\" WHERE id = $1", id).Scan(&enterprise.Id, &enterprise.Name, &enterprise.Email, &enterprise.SubscriptionId)
 	if err != nil {
 		fmt.Println(err)
 		return enterprise
 	}
-	var subscription Subscription
-	enterprise.Sub = subscription.ReadById(subscriptionId)
 	return enterprise
 }

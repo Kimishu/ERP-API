@@ -3,6 +3,7 @@ package handlers
 import (
 	"ERP-API/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -21,11 +22,10 @@ func GetProductByID(c *gin.Context) {
 }
 
 func PostProduct(c *gin.Context) {
-	var product = models.Product{
-		E: models.Enterprise{
-			ID: c.GetString("enterprise_id"),
-		},
-	}
+	var product models.Product
+	enterpriseId, _ := uuid.Parse(c.GetString("enterprise_id"))
+	product.EnterpriseId = enterpriseId
+
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

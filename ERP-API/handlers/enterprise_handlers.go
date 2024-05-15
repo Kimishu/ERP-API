@@ -47,11 +47,12 @@ func Login(c *gin.Context) {
 
 type registerData struct {
 	Ent      *models.Enterprise `json:"enterprise"`
+	Subs     string             `json:"subscription"`
 	Password string             `json:"password"`
 }
 
 func Register(c *gin.Context) {
-	var data registerData
+	var data = registerData{}
 	var userId string
 
 	if err := c.ShouldBindJSON(&data); err != nil {
@@ -71,11 +72,11 @@ func Register(c *gin.Context) {
 	}
 	data.Password = string(hashedPassword)
 
-	subscriptionId := data.Ent.Sub.ReadByName(data.Ent.Sub.Name).ID
-	data.Ent.Sub.ID = subscriptionId
+	subscription := models.Subscription{}
+	data.Ent.SubscriptionId = subscription.ReadByName(data.Subs).Id
 
 	_, err = models.Database.Exec("INSERT INTO \"Enterprises\" (name, email, password, subscription_id) VALUES ($1, $2, $3, $4)",
-		data.Ent.Name, data.Ent.Email, data.Password, data.Ent.Sub.ID)
+		data.Ent.Name, data.Ent.Email, data.Password, data.Ent.SubscriptionId)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
