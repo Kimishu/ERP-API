@@ -5,6 +5,7 @@ import (
 	"ERP-API/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
@@ -47,7 +48,6 @@ func Login(c *gin.Context) {
 
 type registerData struct {
 	Ent      *models.Enterprise `json:"enterprise"`
-	Subs     string             `json:"subscription"`
 	Password string             `json:"password"`
 }
 
@@ -71,12 +71,10 @@ func Register(c *gin.Context) {
 		return
 	}
 	data.Password = string(hashedPassword)
+	data.Ent.Id = uuid.New()
 
-	subscription := models.Subscription{}
-	data.Ent.SubscriptionId = subscription.ReadByName(data.Subs).Id
-
-	_, err = models.Database.Exec("INSERT INTO \"Enterprises\" (name, email, password, subscription_id) VALUES ($1, $2, $3, $4)",
-		data.Ent.Name, data.Ent.Email, data.Password, data.Ent.SubscriptionId)
+	_, err = models.Database.Exec("INSERT INTO \"Enterprises\" (id, name, email, password, subscription_id) VALUES ($1, $2, $3, $4, $5)",
+		data.Ent.Id, data.Ent.Name, data.Ent.Email, data.Password, data.Ent.SubscriptionId)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

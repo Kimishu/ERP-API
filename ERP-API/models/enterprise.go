@@ -6,7 +6,7 @@ import (
 )
 
 type Enterprise struct {
-	Id             string    `json:"id"`
+	Id             uuid.UUID `json:"id"`
 	Name           string    `json:"name"`
 	Email          string    `json:"email"`
 	SubscriptionId uuid.UUID `json:"subscription_id"`

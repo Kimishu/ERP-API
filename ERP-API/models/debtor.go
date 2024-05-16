@@ -9,8 +9,19 @@ type Debtor struct {
 	Sum          float64   `json:"sum"`
 }
 
-func (d *Debtor) ReadByEnterprise(enterpriseId string) []Debtor {
+func (d *Debtor) ReadByEnterprise(enterpriseId uuid.UUID) []Debtor {
 	var debtors []Debtor
 
 	return debtors
+}
+
+func (d *Debtor) Read(id uuid.UUID) Debtor {
+	var debtor Debtor
+
+	return debtor
+}
+
+func (d *Debtor) Write() error {
+
+	return nil
 }

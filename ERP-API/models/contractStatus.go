@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 )
@@ -8,6 +9,27 @@ import (
 type ContractStatus struct {
 	Id   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
+}
+
+func (c *ContractStatus) ReadAll() []ContractStatus {
+	var statuses []ContractStatus
+
+	rows, err := Database.Query("SELECT id, name FROM \"ContractStatuses\"")
+	if err != nil {
+		fmt.Println(err)
+		return statuses
+	}
+
+	for rows.Next() {
+		var status ContractStatus
+		if err := rows.Scan(&status.Id, &status.Name); err != nil {
+			fmt.Println(err)
+			return statuses
+		}
+		statuses = append(statuses, status)
+	}
+
+	return statuses
 }
 
 func (c *ContractStatus) Read(id string) ContractStatus {
@@ -18,4 +40,12 @@ func (c *ContractStatus) Read(id string) ContractStatus {
 		return contractStatus
 	}
 	return contractStatus
+}
+
+func (c *ContractStatus) Write() error {
+	_, err := Database.Exec("INSERT INTO \"ContractStatuses\" (id, name) VALUES ($1, $2)", uuid.New(), &c.Name)
+	if err != nil {
+		return errors.New("Failed to create a new contract status")
+	}
+	return nil
 }

@@ -1,6 +1,9 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"github.com/google/uuid"
+)
 
 type Subscription struct {
 	Id   uuid.UUID `json:"id"`
@@ -41,4 +44,12 @@ func (s *Subscription) Read(id string) Subscription {
 		return Subscription{}
 	}
 	return subscription
+}
+
+func (s *Subscription) Write() error {
+	_, err := Database.Exec("INSERT INTO \"Subscriptions\" (id, name) VALUES ($1, $2)", uuid.New(), &s.Name)
+	if err != nil {
+		return errors.New("Failed to create a new subscription")
+	}
+	return nil
 }

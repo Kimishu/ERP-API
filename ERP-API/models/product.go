@@ -45,7 +45,7 @@ func (p *Product) ReadByEnterprise(enterpriseId string) []Product {
 }
 
 func (p *Product) Write() error {
-	_, err := Database.Exec("INSERT INTO \"Products\" (name, description, price, enterprise_id) VALUES ($1, $2, $3, $4)", &p.Name, &p.Description, &p.Price, &p.EnterpriseId)
+	_, err := Database.Exec("INSERT INTO \"Products\" (id, name, description, price, enterprise_id) VALUES ($1, $2, $3, $4, $5)", uuid.New(), &p.Name, &p.Description, &p.Price, &p.EnterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("Failed to create a new product")

@@ -19,16 +19,26 @@ func main() {
 	//Subscriptions
 	router.GET("/subscriptions", handlers.GetSubscriptions)
 	router.GET("/subscriptions/:id", handlers.GetSubscriptionByName)
+	//Contract Statuses
+	router.GET("/contracts/statuses", handlers.GetContractStatuses)
+	router.GET("/contracts/statuses/:id", handlers.GetContractStatusById)
+	//Delivery Statuses
+	router.GET("/deliveries/statuses", handlers.GetDeliveryStatuses)
+	router.GET("/deliveries/statuses/:id", handlers.GetDeliveryStatusById)
 
 	protectedRoutes := router.Group("/")
 	protectedRoutes.Use(middleware.AuthenticationMiddleware())
 	{
 		//Enterprises
 		protectedRoutes.GET("/profile", handlers.Profile)
+		//Subscriptions
+		protectedRoutes.POST("/subscriptions", handlers.PostSubscription)
 		//Contracts
 		protectedRoutes.GET("/contracts", handlers.GetContracts)
 		protectedRoutes.GET("/contracts/import", handlers.GetImportContracts)
 		protectedRoutes.GET("/contracts/export", handlers.GetExportContracts)
+		//Contract Statuses
+		protectedRoutes.POST("/contracts/statuses", handlers.PostContractStatus)
 		//requests?
 		//...
 		protectedRoutes.GET("/contracts/:id", handlers.GetContractById)
@@ -45,6 +55,8 @@ func main() {
 		//Deliveries
 		protectedRoutes.GET("/deliveries", handlers.GetDeliveries)
 		protectedRoutes.GET("/deliveries/:id", handlers.GetDeliveryByID)
+		//Delivert Statuses
+		protectedRoutes.POST("/deliveries/statuses", handlers.PostDeliveryStatus)
 		//Debtors
 		protectedRoutes.GET("/debtors", handlers.GetDebtors)
 		protectedRoutes.GET("/debtors/:id", handlers.GetDebtorByID)

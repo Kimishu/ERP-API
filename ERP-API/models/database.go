@@ -11,7 +11,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "cyb228"
+	password = "cyb"
 	dbname   = "ERP-db"
 )
 
