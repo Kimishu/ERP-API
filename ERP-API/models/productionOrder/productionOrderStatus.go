@@ -1,6 +1,7 @@
-package models
+package productionOrder
 
 import (
+	"ERP-API/models"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ type ProductionOrderStatus struct {
 
 func (p *ProductionOrderStatus) ReadAll() []ProductionOrderStatus {
 	var statuses []ProductionOrderStatus
-	rows, err := Database.Query("SELECT id, name FROM \"PrudctionsOrderStatuses\"")
+	rows, err := models.Database.Query("SELECT id, name FROM \"PrudctionsOrderStatuses\"")
 	if err != nil {
 		return []ProductionOrderStatus{}
 	}
@@ -31,7 +32,7 @@ func (p *ProductionOrderStatus) ReadAll() []ProductionOrderStatus {
 func (p *ProductionOrderStatus) Read(id uuid.UUID) (ProductionOrderStatus, error) {
 	var productionOrderStatus ProductionOrderStatus
 
-	err := Database.QueryRow("SELECT * FROM \"ProductionOrderStatuses\" WHERE id = ?", id).Scan(&productionOrderStatus.Id, &productionOrderStatus.Name)
+	err := models.Database.QueryRow("SELECT * FROM \"ProductionOrderStatuses\" WHERE id = ?", id).Scan(&productionOrderStatus.Id, &productionOrderStatus.Name)
 	if err != nil {
 		fmt.Println(err)
 		return productionOrderStatus, errors.New("order status not found")
@@ -40,7 +41,7 @@ func (p *ProductionOrderStatus) Read(id uuid.UUID) (ProductionOrderStatus, error
 }
 
 func (p *ProductionOrderStatus) Write() error {
-	_, err := Database.Exec("INSERT INTO \"ProductionOrderStatuses\" (id, name) VALUES ($1, $2)", uuid.New(), &p.Name)
+	_, err := models.Database.Exec("INSERT INTO \"ProductionOrderStatuses\" (id, name) VALUES ($1, $2)", uuid.New(), &p.Name)
 	if err != nil {
 		return errors.New("Failed to create a new production order status!")
 	}

@@ -1,7 +1,8 @@
-package handlers
+package enterprise
 
 import (
 	"ERP-API/models"
+	"ERP-API/models/enterprise"
 	"ERP-API/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -9,11 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
-
-//		Authorization example
-//	1. Enterprise emails
-//	2.
-//
 
 type loginData struct {
 	Email    string `json:"email"`
@@ -47,8 +43,8 @@ func Login(c *gin.Context) {
 }
 
 type registerData struct {
-	Ent      *models.Enterprise `json:"enterprise"`
-	Password string             `json:"password"`
+	Ent      *enterprise.Enterprise `json:"enterprise"`
+	Password string                 `json:"password"`
 }
 
 func Register(c *gin.Context) {
@@ -74,7 +70,7 @@ func Register(c *gin.Context) {
 	data.Ent.Id = uuid.New()
 
 	_, err = models.Database.Exec("INSERT INTO \"Enterprises\" (id, name, email, password, subscription_id) VALUES ($1, $2, $3, $4, $5)",
-		data.Ent.Id, data.Ent.Name, data.Ent.Email, data.Password, data.Ent.SubscriptionId)
+		data.Ent.Id, data.Ent.Name, data.Ent.Email, data.Password, data.Ent.Subscription.Id)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -92,9 +88,13 @@ func Register(c *gin.Context) {
 }
 
 func Profile(c *gin.Context) {
-	subRepo := &models.Enterprise{}
-	enterpriseId := c.GetString("enterprise_id")
-	enterprise := subRepo.Read(enterpriseId)
+	subRepo := &enterprise.Enterprise{}
+	ent := subRepo.Read(c.GetString("enterprise_id"))
+	c.JSON(http.StatusOK, ent)
+}
 
-	c.JSON(http.StatusOK, enterprise)
+func Enterprise(c *gin.Context) {
+	subRepo := &enterprise.Enterprise{}
+	ent := subRepo.Read(c.Param("id"))
+	c.JSON(http.StatusOK, ent)
 }

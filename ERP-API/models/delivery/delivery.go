@@ -1,4 +1,4 @@
-package models
+package delivery
 
 import (
 	"github.com/google/uuid"

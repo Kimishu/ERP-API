@@ -1,27 +1,27 @@
-package handlers
+package delivery
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/delivery"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func GetDeliveryStatuses(c *gin.Context) {
-	subRepo := &models.DeliveryStatus{}
+	subRepo := &delivery.DeliveryStatus{}
 	statuses := subRepo.ReadAll()
 	c.JSON(http.StatusOK, statuses)
 }
 
 func GetDeliveryStatusById(c *gin.Context) {
-	subRepo := &models.DeliveryStatus{}
+	subRepo := &delivery.DeliveryStatus{}
 	statusId, _ := uuid.Parse(c.Param("id"))
 	status := subRepo.Read(statusId)
 	c.JSON(http.StatusOK, status)
 }
 
 func PostDeliveryStatus(c *gin.Context) {
-	deliveryStatus := &models.DeliveryStatus{}
+	deliveryStatus := &delivery.DeliveryStatus{}
 
 	if err := c.ShouldBindJSON(&deliveryStatus); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

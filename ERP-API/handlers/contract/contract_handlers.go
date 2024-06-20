@@ -1,13 +1,13 @@
-package handlers
+package contract
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/contract"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func GetContracts(c *gin.Context) {
-	subRepo := &models.Contract{}
+	subRepo := &contract.Contract{}
 	enterpriseId := c.GetString("enterprise_id")
 
 	importContracts, _ := subRepo.Read(enterpriseId, "buyer_id")
@@ -20,14 +20,14 @@ func GetContracts(c *gin.Context) {
 }
 
 func GetImportContracts(c *gin.Context) {
-	subRepo := &models.Contract{}
+	subRepo := &contract.Contract{}
 	enterpriseId := c.GetString("enterprise_id")
 	contracts, _ := subRepo.Read(enterpriseId, "buyer_id")
 	c.JSON(http.StatusOK, contracts)
 }
 
 func GetExportContracts(c *gin.Context) {
-	subRepo := &models.Contract{}
+	subRepo := &contract.Contract{}
 	enterpriseId := c.GetString("enterprise_id")
 	contracts, _ := subRepo.Read(enterpriseId, "seller_id")
 	c.JSON(http.StatusOK, contracts)

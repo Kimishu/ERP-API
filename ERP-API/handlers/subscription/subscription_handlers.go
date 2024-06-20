@@ -1,26 +1,26 @@
-package handlers
+package subscription
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/subscription"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func GetSubscriptions(c *gin.Context) {
-	subRepo := &models.Subscription{}
+	subRepo := &subscription.Subscription{}
 	subscriptions := subRepo.ReadAll()
 	c.JSON(http.StatusOK, subscriptions)
 }
 
 func GetSubscriptionByName(c *gin.Context) {
-	subRepo := &models.Subscription{}
+	subRepo := &subscription.Subscription{}
 	name := c.Param("name")
 	subscription := subRepo.ReadByName(name)
 	c.JSON(http.StatusOK, subscription)
 }
 
 func PostSubscription(c *gin.Context) {
-	subscription := &models.Subscription{}
+	subscription := &subscription.Subscription{}
 	if err := c.ShouldBindJSON(subscription); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

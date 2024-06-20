@@ -1,14 +1,14 @@
-package handlers
+package product
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/product"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func GetProducts(c *gin.Context) {
-	subRepo := &models.Product{}
+	subRepo := &product.Product{}
 	enterpriseId := c.GetString("enterprise_id")
 
 	products := subRepo.ReadByEnterprise(enterpriseId)
@@ -16,13 +16,13 @@ func GetProducts(c *gin.Context) {
 }
 
 func GetProductByID(c *gin.Context) {
-	subRepo := &models.Product{}
+	subRepo := &product.Product{}
 	product := subRepo.Read(c.Param("id"))
 	c.JSON(http.StatusOK, product)
 }
 
 func PostProduct(c *gin.Context) {
-	var product models.Product
+	var product product.Product
 	enterpriseId, _ := uuid.Parse(c.GetString("enterprise_id"))
 	product.EnterpriseId = enterpriseId
 

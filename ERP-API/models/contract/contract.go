@@ -1,6 +1,7 @@
-package models
+package contract
 
 import (
+	"ERP-API/models"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -20,7 +21,7 @@ type Contract struct {
 func (c *Contract) Read(id string, queryParam string) ([]Contract, error) {
 	var contracts []Contract
 
-	rows, err := Database.Query("SELECT * FROM \"Contracts\" WHERE $1 = $2", queryParam, id)
+	rows, err := models.Database.Query("SELECT * FROM \"Contracts\" WHERE $1 = $2", queryParam, id)
 	if err != nil {
 		return contracts, errors.New("enterprise hasn't any contracts")
 	}
@@ -41,7 +42,7 @@ func (c *Contract) Read(id string, queryParam string) ([]Contract, error) {
 }
 
 func (c *Contract) Write() error {
-	_, err := Database.Exec("INSERT INTO \"Contracts\" (id, name, description, quantity, product_id, status_id, seller_id, buyer_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+	_, err := models.Database.Exec("INSERT INTO \"Contracts\" (id, name, description, quantity, product_id, status_id, seller_id, buyer_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 		uuid.New(), &c.Name, &c.Description, &c.Quantity, &c.ProductId, &c.StatusId, &c.SellerId, &c.BuyerId)
 	if err != nil {
 		fmt.Println(err)

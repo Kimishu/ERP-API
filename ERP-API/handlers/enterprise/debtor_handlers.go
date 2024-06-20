@@ -1,28 +1,28 @@
-package handlers
+package enterprise
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/enterprise"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func GetDebtors(c *gin.Context) {
-	subRepo := models.Debtor{}
+	subRepo := enterprise.Debtor{}
 	enterpriseId, _ := uuid.Parse(c.GetString("enterprise_id"))
 	debtors := subRepo.ReadByEnterprise(enterpriseId)
 	c.JSON(http.StatusOK, debtors)
 }
 
 func GetDebtorByID(c *gin.Context) {
-	subRepo := models.Debtor{}
+	subRepo := enterprise.Debtor{}
 	enterpriseId, _ := uuid.Parse(c.Param("id"))
 	debtor := subRepo.Read(enterpriseId)
 	c.JSON(http.StatusOK, debtor)
 }
 
 func PostDebtor(c *gin.Context) {
-	debtor := models.Debtor{}
+	debtor := enterprise.Debtor{}
 
 	if err := c.ShouldBindJSON(&debtor); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

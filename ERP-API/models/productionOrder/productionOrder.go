@@ -1,6 +1,7 @@
-package models
+package productionOrder
 
 import (
+	"ERP-API/models"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -18,7 +19,7 @@ type ProductionOrder struct {
 
 func (po *ProductionOrder) Read(enterpriseId uuid.UUID, orderId uuid.UUID) (ProductionOrder, error) {
 	var productionOrder ProductionOrder
-	err := Database.QueryRow("SELECT po.id, po.status_id, po.date_start, po.date_end, po.quantity, po.product_id FROM \"ProductionOrders\" po JOIN \"Products\" p ON po.product_id = $1 AND p.enterprise_id = $2", orderId, enterpriseId).Scan(&productionOrder.Id,
+	err := models.Database.QueryRow("SELECT po.id, po.status_id, po.date_start, po.date_end, po.quantity, po.product_id FROM \"ProductionOrders\" po JOIN \"Products\" p ON po.product_id = $1 AND p.enterprise_id = $2", orderId, enterpriseId).Scan(&productionOrder.Id,
 		&productionOrder.StatusId, &productionOrder.DateStart, &productionOrder.DateEnd, &productionOrder.Quantity, &productionOrder.ProductId)
 	if err != nil {
 		return ProductionOrder{}, errors.New("Requested order doesn't exist or doesn't belongs to you")
@@ -28,7 +29,7 @@ func (po *ProductionOrder) Read(enterpriseId uuid.UUID, orderId uuid.UUID) (Prod
 
 func (po *ProductionOrder) ReadAll(enterpriseId uuid.UUID) []ProductionOrder {
 	var productionOrders []ProductionOrder
-	rows, err := Database.Query("SELECT id, status_id, date_start, date_end, quantity, product_id FROM \"ProductionOrders\""+
+	rows, err := models.Database.Query("SELECT id, status_id, date_start, date_end, quantity, product_id FROM \"ProductionOrders\""+
 		"WHERE product_id = (SELECT product_id FROM \"Products\" WHERE enterprise_id = $1)", enterpriseId)
 	if err != nil {
 		fmt.Println(err)
@@ -51,7 +52,7 @@ func (po *ProductionOrder) Write() error {
 	po.DateStart = time.Now()
 	po.DateEnd = po.DateStart.Add(time.Hour * 24 * 10)
 	//uuid.New()
-	_, err := Database.Exec("INSERT INTO \"ProductionOrders\" (id, status_id, date_start, date_end, quantity, product_id)")
+	_, err := models.Database.Exec("INSERT INTO \"ProductionOrders\" (id, status_id, date_start, date_end, quantity, product_id)")
 	if err != nil {
 		return errors.New("Failed to create a new production order!")
 	}

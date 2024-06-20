@@ -1,6 +1,7 @@
-package models
+package contract
 
 import (
+	"ERP-API/models"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -14,7 +15,7 @@ type ContractStatus struct {
 func (c *ContractStatus) ReadAll() []ContractStatus {
 	var statuses []ContractStatus
 
-	rows, err := Database.Query("SELECT id, name FROM \"ContractStatuses\"")
+	rows, err := models.Database.Query("SELECT id, name FROM \"ContractStatuses\"")
 	if err != nil {
 		fmt.Println(err)
 		return statuses
@@ -34,7 +35,7 @@ func (c *ContractStatus) ReadAll() []ContractStatus {
 
 func (c *ContractStatus) Read(id string) ContractStatus {
 	var contractStatus ContractStatus
-	err := Database.QueryRow("SELECT * FROM \"ContractStatuses\" WHERE id=$1", id).Scan(&contractStatus.Id, &contractStatus.Name)
+	err := models.Database.QueryRow("SELECT * FROM \"ContractStatuses\" WHERE id=$1", id).Scan(&contractStatus.Id, &contractStatus.Name)
 	if err != nil {
 		fmt.Println(err)
 		return contractStatus
@@ -43,7 +44,7 @@ func (c *ContractStatus) Read(id string) ContractStatus {
 }
 
 func (c *ContractStatus) Write() error {
-	_, err := Database.Exec("INSERT INTO \"ContractStatuses\" (id, name) VALUES ($1, $2)", uuid.New(), &c.Name)
+	_, err := models.Database.Exec("INSERT INTO \"ContractStatuses\" (id, name) VALUES ($1, $2)", uuid.New(), &c.Name)
 	if err != nil {
 		return errors.New("Failed to create a new contract status")
 	}

@@ -1,6 +1,7 @@
-package models
+package product
 
 import (
+	"ERP-API/models"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -16,7 +17,7 @@ type Product struct {
 
 func (p *Product) Read(id string) Product {
 	var product Product
-	err := Database.QueryRow("SELECT name, description, price, enterprise_id FROM \"Products\" WHERE id=$1", id).Scan(&product.Id, &product.Name, &product.Description, &product.Price, &product.EnterpriseId)
+	err := models.Database.QueryRow("SELECT name, description, price, enterprise_id FROM \"Products\" WHERE id=$1", id).Scan(&product.Id, &product.Name, &product.Description, &product.Price, &product.EnterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return product
@@ -26,7 +27,7 @@ func (p *Product) Read(id string) Product {
 
 func (p *Product) ReadByEnterprise(enterpriseId string) []Product {
 	var products []Product
-	rows, err := Database.Query("SELECT name, description, price FROM \"Products\" WHERE enterprise_id = $1", enterpriseId)
+	rows, err := models.Database.Query("SELECT name, description, price FROM \"Products\" WHERE enterprise_id = $1", enterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return products
@@ -45,7 +46,7 @@ func (p *Product) ReadByEnterprise(enterpriseId string) []Product {
 }
 
 func (p *Product) Write() error {
-	_, err := Database.Exec("INSERT INTO \"Products\" (id, name, description, price, enterprise_id) VALUES ($1, $2, $3, $4, $5)", uuid.New(), &p.Name, &p.Description, &p.Price, &p.EnterpriseId)
+	_, err := models.Database.Exec("INSERT INTO \"Products\" (id, name, description, price, enterprise_id) VALUES ($1, $2, $3, $4, $5)", uuid.New(), &p.Name, &p.Description, &p.Price, &p.EnterpriseId)
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("Failed to create a new product")

@@ -1,20 +1,20 @@
-package handlers
+package productionOrder
 
 import (
-	"ERP-API/models"
+	"ERP-API/models/productionOrder"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func GetProductionOrderStatuses(c *gin.Context) {
-	subRepo := &models.ProductionOrderStatus{}
+	subRepo := &productionOrder.ProductionOrderStatus{}
 	statuses := subRepo.ReadAll()
 	c.JSON(http.StatusOK, statuses)
 }
 
 func GetProductionOrderStatusById(c *gin.Context) {
-	subRepo := &models.ProductionOrderStatus{}
+	subRepo := &productionOrder.ProductionOrderStatus{}
 	id, _ := uuid.Parse(c.Param("id"))
 	status, err := subRepo.Read(id)
 	if err != nil {
@@ -25,7 +25,7 @@ func GetProductionOrderStatusById(c *gin.Context) {
 }
 
 func PostProductionOrderStatus(c *gin.Context) {
-	productionOrderStatus := &models.ProductionOrderStatus{}
+	productionOrderStatus := &productionOrder.ProductionOrderStatus{}
 
 	if err := c.ShouldBindJSON(&productionOrderStatus); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
